@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -49,8 +51,13 @@ func TestSolveDay1(t *testing.T) {
 
 func TestDay1(t *testing.T) {
 	t.Run("Test Day 1", func(t *testing.T) {
-		// read day1-input.txt
-		input := ReadFile("../day1-input.txt")
+		// get project base source directory
+		cmdOut, err := exec.Command("git", "rev-parse", "--show-toplevel").Output()
+		if err != nil {
+			log.Fatalf("failed to get project base directory: %v", err)
+		}
+		path := strings.Join([]string{strings.TrimSpace(string(cmdOut)), "day1-input.txt"}, "/")
+		input := ReadFile(path)
 
 		left, right := ParseInput(input)
 		got := SolveDay1(left, right)
